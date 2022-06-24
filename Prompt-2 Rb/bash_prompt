@@ -4,7 +4,7 @@ require 'etc'
 
 PWD = Dir.pwd
 user = Etc.getpwuid.name
-TMPFILE = "/tmp/bash_prompt.lock"
+TMPFILE = "/tmp/bash_prompt.lock_#{user}"
 
 class String
 	# Fast conversion to RGB when Integer is passed.
