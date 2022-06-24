@@ -18,7 +18,7 @@
 #include <mruby.h>
 #include <mruby/compile.h>
 
-#include "bash_profile.rb.h"
+#include "bash_prompt.rb.h"
 
 #define SUCCESS 0
 #define FAILURE 1
