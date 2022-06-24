@@ -1,4 +1,4 @@
-data = IO.read(File.join(__dir__, 'bash_profile.rb'))
+data = IO.read(File.join(__dir__, 'bash_prompt.rb'))
 
 data.gsub!(/(\\.{1})/) { |x| "\\#{x}" }
 data.gsub!(?\t, "\\t")
