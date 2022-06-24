@@ -20,15 +20,8 @@
 
 #include "bash_prompt.rb.h"
 
-#define SUCCESS 0
-#define FAILURE 1
-
 #define TIME_FORMAT "%H:%M:%S"
 #define TIME_RETURN_SIZE 9
-
-void get_cwd(char *cwd) {
-
-}
 
 mrb_value get_hostname(mrb_state *s, mrb_value self) {
 	int h_max = sysconf(_SC_HOST_NAME_MAX) + 1 ;
@@ -50,9 +43,7 @@ mrb_value get_current_time(mrb_state *s, mrb_value self) {
 	struct tm *tp ;
 	time(&t) ;
 
-	if (!t) {
-		return mrb_nil_value() ;
-	}
+	if (!t) return mrb_nil_value() ;
 
 	size_t size = TIME_RETURN_SIZE ;
 	char formatted_time[size] ;
@@ -61,7 +52,6 @@ mrb_value get_current_time(mrb_state *s, mrb_value self) {
 	strftime(formatted_time, size, TIME_FORMAT, tp) ;
 
 	return mrb_str_new_cstr(s, formatted_time) ;
-
 }
 
 mrb_value get_pwd(mrb_state *s, mrb_value self) {
