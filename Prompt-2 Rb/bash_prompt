@@ -3,7 +3,8 @@ require 'open3'
 require 'etc'
 
 PWD = Dir.pwd
-TMPFILE = '/tmp/bash_prompt.lock'
+user = Etc.getpwuid.name
+TMPFILE = "/tmp/bash_prompt.lock"
 
 class String
 	# Fast conversion to RGB when Integer is passed.
@@ -407,8 +408,8 @@ begin
 	]
 
 	IO.write(TMPFILE, '0') unless File.exist?(TMPFILE)
-	value = File.read(TMPFILE).to_i % c.length
-	IO.write(TMPFILE, value.+(1).to_s)
+	value = File.read(TMPFILE).to_i % c.length if File.readable?(TMPFILE)
+	IO.write(TMPFILE, value.+(1).to_s) if File.writable?(TMPFILE) rescue nil
 	c.rotate!(value)
 
 	pwd_formatted = PWD.dup
@@ -416,7 +417,6 @@ begin
 	if pwd_formatted.start_with?(homedir)
 		pwd_formatted[0...homedir.length] = "~"
 	end
-
 
 	print %Q(\u256d\u2504\u2504[#{Etc.getpwuid.name}\u02d0\u02d0#{Etc.uname[:nodename]}]\u{1F32B} ).multi_gradient(c.shift, c.shift, c.shift) <<
 		%Q([#{pwd_formatted}]).multi_gradient(c.shift, c.shift, c.shift, bold: true) <<
@@ -426,5 +426,6 @@ begin
 		%Q(#{ruby_version_str}) <<
 		%Q(\n\u2570\u2500\u2500\u257c\u2b9a\s)
 rescue Exception
-	retry
+	puts $!.backtrace
+	puts "$ "
 end
