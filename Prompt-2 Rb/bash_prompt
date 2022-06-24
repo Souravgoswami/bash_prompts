@@ -427,5 +427,5 @@ begin
 		%Q(\n\u2570\u2500\u2500\u257c\u2b9a\s)
 rescue Exception
 	puts $!.backtrace
-	puts "$ "
+	puts USER == 'root' ? '# ' : '? '
 end
