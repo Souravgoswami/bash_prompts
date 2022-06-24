@@ -411,8 +411,15 @@ begin
 	IO.write(TMPFILE, value.+(1).to_s)
 	c.rotate!(value)
 
+	pwd_formatted = PWD.dup
+	homedir = Etc.getpwuid.dir
+	if pwd_formatted.start_with?(homedir)
+		pwd_formatted[0...homedir.length] = "~"
+	end
+
+
 	print %Q(\u256d\u2504\u2504[#{Etc.getpwuid.name}\u02d0\u02d0#{Etc.uname[:nodename]}]\u{1F32B} ).multi_gradient(c.shift, c.shift, c.shift) <<
-		%Q([#{Dir.pwd}]).multi_gradient(c.shift, c.shift, c.shift, bold: true) <<
+		%Q([#{pwd_formatted}]).multi_gradient(c.shift, c.shift, c.shift, bold: true) <<
 		%Q(\u{1F32B} [#{children} item#{children == 1 ? '' : 's'}]).multi_gradient(c.shift, c.shift) <<
 		%Q(\u{1F32B} [#{Time.now.strftime(%Q(%H:%M:%S))}]).multi_gradient(c.shift, c.shift) <<
 		%Q(#{git}) <<
