@@ -1,3 +1,5 @@
+#pragma GCC optimize("Os")
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -24,9 +26,8 @@
 #define TIME_FORMAT "%H:%M:%S"
 #define TIME_RETURN_SIZE 9
 
-char *get_cwd() {
-	char cwd[PATH_MAX] ;
-	return getcwd(cwd, sizeof(cwd)) != NULL ? cwd : 0 ;
+void get_cwd(char *cwd) {
+
 }
 
 mrb_value get_hostname(mrb_state *s, mrb_value self) {
@@ -64,9 +65,9 @@ mrb_value get_current_time(mrb_state *s, mrb_value self) {
 }
 
 mrb_value get_pwd(mrb_state *s, mrb_value self) {
-	char *cwd = get_cwd() ;
+	char cwd[PATH_MAX] ;
 
-	if (cwd) {
+	if (getcwd(cwd, sizeof(cwd))) {
 		struct passwd *pw = getpwuid(getuid()) ;
 		char *homedir = pw->pw_dir ;
 		const unsigned long homedir_len = strlen(homedir) ;
@@ -94,7 +95,10 @@ mrb_value count_files(mrb_state *s, mrb_value self) {
 	unsigned long count = 0 ;
 	char *name ;
 
-	dirp = opendir(get_cwd()) ;
+	char cwd[PATH_MAX] ;
+	if (!getcwd(cwd, sizeof(cwd))) return mrb_nil_value() ;
+
+	dirp = opendir(cwd) ;
 
 	while ((entry = readdir(dirp))) {
 		name = entry->d_name ;
