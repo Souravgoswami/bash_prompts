@@ -1,5 +1,3 @@
-TMPFILE = '/tmp/bash_prompt.lock'
-
 ###### CPrompt from C File ######
 PWD = CPrompt.get_pwd
 hostname = CPrompt.get_hostname
@@ -8,11 +6,13 @@ current_time = CPrompt.get_current_time
 children = CPrompt.count_files
 
 ###### Test ######
-# PWD = 'pwd'
-# hostname = 'hostname'
-# logname = 'logname'
-# current_time = Time.now
-# children = 50
+#~ PWD = 'pwd'
+#~ hostname = 'hostname'
+#~ logname = 'logname'
+#~ current_time = Time.now
+#~ children = 50
+
+TMPFILE = "/tmp/bash_prompt_#{logname}.lock"
 
 class String
 	# Fast conversion to RGB when Integer is passed.
@@ -333,13 +333,9 @@ c = [
 	0xf5317f, 0xb122e5
 ]
 
-unless File.exist?(TMPFILE)
-	File.open(TMPFILE, 'w').write('0')
-end
-
-value = File.read(TMPFILE).to_i % c.length
-
-File.open(TMPFILE, 'w').write(value.+(1).to_s)
+File.open(TMPFILE, 'w').write('0') rescue nil unless File.exist?(TMPFILE)
+value = File.read(TMPFILE).to_i % c.length rescue nil
+File.open(TMPFILE, 'w').write(value.+(1).to_s) rescue nil
 c.rotate!(value)
 
 print %Q(\u256d\u2504\u2504[#{logname}\u02d0\u02d0#{hostname}]\u2505).multi_gradient(c.shift, c.shift, c.shift) <<
